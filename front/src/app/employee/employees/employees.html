@@ -1,0 +1,230 @@
+<p-toast />
+
+<button type="button" pButton size="small" (click)="addEmp()">
+    <svg data-p-icon="plus" ></svg>
+    Add employee
+</button>
+<button type="button" pButton size="small">
+    <svg data-p-icon="plus" ></svg>
+    Import employees
+</button>
+
+<!-- [()] banana in box is two way binding, the data shared between parent & child -->
+<app-add-emp-form [(showAddEmpDialog)]="showAddEmpDialog"></app-add-emp-form>
+<app-edit-emp-form (notify)="onNotify()" [(loading)]="loading" [empCurData]="empCurData" [(showEditEmpDialog)]="showEditEmpDialog"></app-edit-emp-form>
+
+
+<!-- @if (showAddEmpDialog){
+    <div class="flex justify-center">
+        <p-dialog [(visible)]="showAddEmpDialog" [modal]="true" header="Edit Employee" [style]="{ width: '24rem' }">
+            <div class="flex flex-col gap-4">
+                <div class="flex flex-col gap-1.5">
+
+                    <app-add-emp-form></app-add-emp-form>
+
+
+                </div>
+            </div>
+
+            <ng-template #footer>
+                <button type="button" pButton severity="secondary" variant="outlined" (click)="showAddEmpDialog = false">Cancel</button>
+                <button type="button" pButton (click)="commitEditEmpChanges()">Save</button>
+            </ng-template>
+        </p-dialog>
+    </div>
+} -->
+
+
+<!-- @if (showEditEmpDialog){
+    <div class="flex justify-center">
+        <p-dialog [(visible)]="showEditEmpDialog" [modal]="true" header="Edit Employee" [style]="{ width: '24rem' }">
+            <div class="flex flex-col gap-4">
+                <div class="flex flex-col gap-1.5">
+                    <label pLabel for="first_name">First name</label>
+                    <input pInputText id="first_name" [(ngModel)]="EmpEditedData.first_name" />
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label pLabel for="last_name">Last name</label>
+                    <input pInputText id="last_name" [(ngModel)]="EmpEditedData.last_name" />
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label pLabel for="address">Address</label>
+                    <input pInputText id="address" [(ngModel)]="EmpEditedData.address" />
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label pLabel for="cnss_number">Cass number</label>
+                    <input pInputText id="cnss_number" [(ngModel)]="EmpEditedData.cnss_number" />
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label pLabel for="gender">Gender</label>
+                    <input pInputText id="gender" [(ngModel)]="EmpEditedData.gender" />
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label pLabel for="phone">Phone number</label>
+                    <input pInputText id="phone" [(ngModel)]="EmpEditedData.phone_number" />
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label pLabel for="roles">Roles</label>
+                    <input pInputText id="roles" [(ngModel)]="EmpEditedData.roles" />
+                </div>
+            </div>
+
+
+            <ng-template #footer>
+                <button type="button" pButton severity="secondary" variant="outlined" (click)="showEditEmpDialog = false">Cancel</button>
+                <button type="button" pButton (click)="commitEditEmpChanges()">Save</button>
+            </ng-template>
+        </p-dialog>
+    </div>
+} -->
+
+
+
+<div class="flex flex-wrap gap-4">
+    <p-iconfield>
+        <p-inputicon>
+            <svg data-p-icon="search" ></svg>
+        </p-inputicon>
+        <input [formControl]="nameCtrl" pInputText placeholder="Employee name">
+    </p-iconfield>
+</div>
+
+
+<p-table 
+    showGridlines
+    [totalRecords]="total_records"
+    [first]="first"
+    [lazy]="true"
+    [value]="employees()"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    [scrollable]="true"
+    scrollHeight="400px"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]"
+    (onPage)="pageChange($event)"
+>
+
+    <ng-template #header>
+        <tr>
+            <!-- <th pSortableColumn="number">
+                <div class="flex items-center gap-2">
+                    Number
+                    <p-sort-icon field="number" />
+                </div>
+            </th> -->
+            <th>Number</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Job Position</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+        @if (loading()) {
+            @for (item of [1, 2, 3, 4, 5]; track item) {
+                <tr>
+                    <td><p-skeleton width="2rem" height="1rem" borderRadius="16px" /></td>
+                    <td><p-skeleton width="5rem" height="1rem" borderRadius="16px" /></td>
+                    <td><p-skeleton width="5rem" height="1rem" borderRadius="16px" /></td>
+                    <td><p-skeleton width="5rem" height="1rem" borderRadius="16px" /></td>
+                    <td><p-skeleton width="8rem" height="1rem" borderRadius="16px" /></td>
+                    <td>
+                        <div class="flex items-center justify-center">
+                            <p-skeleton width="2.2rem" height="2.2rem" borderRadius="100px" />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="flex items-center justify-center">
+                            <p-skeleton width="2.2rem" height="2.2rem" borderRadius="100px" />
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+        @else if (no_filter_results) {
+            <tr>
+                <td colspan="7">
+                    <div class="flex flex-col items-center justify-center gap-3 py-10 text-center">
+                        <div class="w-14 h-14 rounded-full bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
+                            <svg data-p-icon="search" [size]="28" class="text-surface-400 dark:text-surface-500" ></svg>
+                        </div>
+                        <div>
+                            <p class="m-0 font-semibold text-surface-900 dark:text-surface-0">No results found ! </p>
+                        </div>
+                        <button type="button" pButton size="small">
+                            <svg data-p-icon="plus" ></svg>
+                            Add employee
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        } @else{
+            <tr>
+                <td colspan="7">
+                    <div class="flex flex-col items-center justify-center gap-3 py-10 text-center">
+                        <div class="w-14 h-14 rounded-full bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
+                            <svg data-p-icon="id-card" [size]="28" class="text-surface-400 dark:text-surface-500" ></svg>
+                        </div>
+                        <div>
+                            <p class="m-0 font-semibold text-surface-900 dark:text-surface-0">No employees yet</p>
+                            <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">Add your first employee to see it listed here.</p>
+                        </div>
+                        <button type="button" pButton size="small">
+                            <svg data-p-icon="plus" ></svg>
+                            Add employee
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        }
+    </ng-template>
+
+    <ng-template #body let-employee>
+        @if (loading()) {
+            <tr>
+                <td><p-skeleton width="2rem" height="1rem" borderRadius="16px" /></td>
+                <td><p-skeleton width="5rem" height="1rem" borderRadius="16px" /></td>
+                <td><p-skeleton width="5rem" height="1rem" borderRadius="16px" /></td>
+                <td><p-skeleton width="5rem" height="1rem" borderRadius="16px" /></td>
+                <td><p-skeleton width="8rem" height="1rem" borderRadius="16px" /></td>
+                <td>
+                    <div class="flex items-center justify-center">
+                        <p-skeleton width="2.2rem" height="2.2rem" borderRadius="100px" />
+                    </div>
+                </td>
+                <td>
+                    <div class="flex items-center justify-center">
+                        <p-skeleton width="2.2rem" height="2.2rem" borderRadius="100px" />
+                    </div>
+                </td>
+            </tr>
+        } @else{
+            <tr>
+                <td>{{ employee.number }}</td>
+                <td>{{ employee.first_name +" "+ employee.last_name }}</td>
+                <td>{{ employee.phone_number }}</td>
+                <td>{{ employee.email }}</td>
+                <td>{{ employee.roles }}</td>
+                <td>
+                    <button type="button" pButton iconOnly severity="secondary" rounded (click)="editEmp(employee)"><svg data-p-icon="user-edit" ></svg></button>
+                    <!-- <button type="button" pButton iconOnly severity="secondary" rounded (click)="empCurData.set(employee)"><svg data-p-icon="user-edit" ></svg></button> -->
+                </td>
+                <td>
+                    <button type="button" pButton iconOnly severity="secondary" rounded><svg data-p-icon="trash"></svg>
+                    </button>
+                </td>
+
+            </tr>
+        }
+    </ng-template>
+</p-table>
+
+
+
+
+
+

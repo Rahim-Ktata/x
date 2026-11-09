@@ -1,0 +1,70 @@
+<!-- App shell layout : side bar + top bar -->
+
+<p-sidebar-layout [dt]="sidebardt">
+    <p-sidebar  id="sidebar" [open]="true" [variant]="'sidebar'" [collapsible]="'icon'">
+        <p-sidebar-spacer />
+        <p-sidebar-aside>
+            <p-sidebar-panel>
+                <p-sidebar-header>
+                    <span>X</span>
+                </p-sidebar-header>
+                <p-sidebar-content>
+                    <p-sidebar-menu>
+
+                        <!-- using menu cuz provides router link, command... organized in ts -->
+                        <p-menu [model]="items" [dt]="sideBarMenudt" >
+                            <ng-template #item let-item>
+                                <p-sidebar-menu-item>
+                                    <!-- wrapping menu items in sidebarMenuBtn so the animation for the side bar -->
+                                    <button pSidebarMenuButton [isActive]="false" [routerLink]="item.routerLink">
+                                        <!-- syntax from ngdocs/menu/templates -->
+                                        <span [class]="item.icon" ></span>
+                                        <span>{{ item.label }}</span>
+                                    </button>
+                                </p-sidebar-menu-item>
+                            </ng-template>
+                        </p-menu>
+
+                    </p-sidebar-menu>
+                </p-sidebar-content>
+                <p-sidebar-footer>...</p-sidebar-footer>
+            </p-sidebar-panel>
+        </p-sidebar-aside>
+    </p-sidebar>
+    <p-sidebar-main>
+        <!-- page content -->
+
+
+        <!-- ------------- top bar --------------------- (placed here so that the sidebar toggle works)  -->
+        <p-menubar [dt]="menubardt">
+            <ng-template #start>
+                <button pButton pSidebarTrigger target="sidebar"  variant="text" severity="contrast">
+                    <svg data-p-icon="bars"></svg>
+                </button>
+            </ng-template>
+
+            <ng-template #end>
+                <button type="button" pButton iconOnly variant="text" severity="contrast" (click)="toggleDarkMode()">
+                    @if(isDarkMode){
+                        <svg  data-p-icon="moon"></svg>
+                    }
+                    @else{
+                        <svg  data-p-icon="sun"></svg>
+                    }
+                </button>
+                <button pButton variant="text" severity="danger"><svg data-p-icon="sign-out"></svg> Logout</button>
+            </ng-template>
+        </p-menubar>
+        <!-- ------------- top bar --------------------- -->
+
+            <router-outlet />
+
+    </p-sidebar-main>
+</p-sidebar-layout>
+
+
+
+
+
+
+
