@@ -3,10 +3,8 @@ from pydantic import BaseModel
 from app.enums import ConditonProperty, Comparer, FieldType
 from typing import List, Dict
 
+from app.schemas.common import MyBaseModel, Response
 
-class MyBaseModel(BaseModel):
-    class config:
-        orm_mode = True
 
 
 class MatchyCondition(MyBaseModel):
@@ -24,7 +22,7 @@ class MatchyOption(MyBaseModel):
     conditions: List[MatchyCondition] | None = []
 
 
-class ImportPossibleFields(MyBaseModel):
+class ImportPossibleFields(Response):
     possible_fields: List[MatchyOption] = []
 
 class MatchyCell(MyBaseModel):

@@ -5,11 +5,7 @@ from datetime import date, datetime
 from typing import List
 
 from app.models.employee import Employee
-
-
-class MyBaseModel(BaseModel):
-    class config:
-        orm_mode = True
+from app.schemas.common import MyBaseModel, Response
 
 
 class EmployeeBase(MyBaseModel):
@@ -32,7 +28,7 @@ class EmployeeInDB(EmployeeBase):
     roles: List[Role]
 
 
-class EmployeePublic(EmployeeBase):
+class EmployeePublic(EmployeeBase, Response):
     id: int
     created_on: datetime
     roles: List[Role]
@@ -50,15 +46,12 @@ class EmployeeCreate(EmployeeBase):
 #     pass
 
 
-class EmployeeUploadResponse(MyBaseModel):
+class EmployeeUploadResponse(Response):
     errs : List[str] = []
     warnings : List[str] = []
-    detail: str = ""
-    stautus_code: int | None = None
 
-class EditEmployeeOut(MyBaseModel):
-    msg: str
-    status_code: str
+class EditEmployeeOut(Response):
+    pass
 
 class EditEmployeeEntry(MyBaseModel):
     first_name : str
@@ -72,7 +65,7 @@ class EditEmployeeEntry(MyBaseModel):
     phone_number : str | None = None
     roles: List[Role]
 
-class PagedResponse(MyBaseModel):
+class PagedResponse(Response):
     page_number: int
     page_size: int
     number_of_pages: int
@@ -81,3 +74,6 @@ class PagedResponse(MyBaseModel):
 
 class GetAllEmployees(PagedResponse):
     employees: List[EmployeePublic]
+
+class DeleteEmployeeResponse(Response):
+    pass

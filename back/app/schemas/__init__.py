@@ -1,5 +1,5 @@
 
-from .employee import EmployeeCreate, EmployeeUploadResponse, EmployeeInDB, EditEmployeeOut, EditEmployeeEntry, GetAllEmployees
+from .employee import EmployeeCreate, EmployeeUploadResponse, EmployeeInDB, EditEmployeeOut, EditEmployeeEntry, GetAllEmployees, DeleteEmployeeResponse
 from .employee import EmployeePublic
 from .accountActivation import AccountActivation
 from .accountActivation import AccountActivationOut

@@ -1,9 +1,11 @@
-from pydantic import BaseModel
 
-class Token(BaseModel):
+from app.schemas.common import MyBaseModel
+
+
+class Token(MyBaseModel):
     access_token: str
     token_type: str
 
 
-class TokenData(BaseModel):
+class TokenData(MyBaseModel):
     email: str | None = None

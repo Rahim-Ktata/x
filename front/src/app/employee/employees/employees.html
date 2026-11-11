@@ -10,7 +10,7 @@
 </button>
 
 <!-- [()] banana in box is two way binding, the data shared between parent & child -->
-<app-add-emp-form [(showAddEmpDialog)]="showAddEmpDialog"></app-add-emp-form>
+<app-add-emp-form (notify)="onNotify()" [(loading)]="loading" [(showAddEmpDialog)]="showAddEmpDialog"></app-add-emp-form>
 <app-edit-emp-form (notify)="onNotify()" [(loading)]="loading" [empCurData]="empCurData" [(showEditEmpDialog)]="showEditEmpDialog"></app-edit-emp-form>
 
 
@@ -155,7 +155,7 @@
                         <div>
                             <p class="m-0 font-semibold text-surface-900 dark:text-surface-0">No results found ! </p>
                         </div>
-                        <button type="button" pButton size="small">
+                        <button type="button" pButton size="small" (click)="addEmp()">
                             <svg data-p-icon="plus" ></svg>
                             Add employee
                         </button>
@@ -173,7 +173,7 @@
                             <p class="m-0 font-semibold text-surface-900 dark:text-surface-0">No employees yet</p>
                             <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">Add your first employee to see it listed here.</p>
                         </div>
-                        <button type="button" pButton size="small">
+                        <button type="button" pButton size="small" (click)="addEmp()">
                             <svg data-p-icon="plus" ></svg>
                             Add employee
                         </button>
@@ -214,7 +214,7 @@
                     <!-- <button type="button" pButton iconOnly severity="secondary" rounded (click)="empCurData.set(employee)"><svg data-p-icon="user-edit" ></svg></button> -->
                 </td>
                 <td>
-                    <button type="button" pButton iconOnly severity="secondary" rounded><svg data-p-icon="trash"></svg>
+                    <button type="button" pButton (click)="deleteEmp(employee)" iconOnly severity="secondary" rounded><svg data-p-icon="trash"></svg>
                     </button>
                 </td>
 

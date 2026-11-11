@@ -1,92 +1,86 @@
 @if(showEditEmpDialog()){
     <div class="flex justify-center">
         <p-dialog [visible]="showEditEmpDialog()" [modal]="true" (onHide)="showEditEmpDialog.set(false)" header="Edit Employee" [style]="{ width: '32rem', height: '32rem' }">
-            <div class="flex justify-center gap-4">
-                <div class="flex flex-col gap-4">
+            <div class="flex flex-col justify-center gap-4">
+                <div class="flex  gap-4">
+                    <div class="flex flex-col gap-4">
+                        <div class="flex flex-col gap-1.5">
+                            <label pLabel for="fname">
+                                <span>First name</span>
+                                <span aria-hidden="true">*</span>
+                            </label>
+                            <input pInputText id="fname" type="text" [formField]="editEmpForm.first_name" />
 
-
-                    <div class="flex flex-col gap-1.5">
-                        <label pLabel for="fname">First name</label>
-                        <input pInputText id="fname" type="text" [formField]="editEmpForm.first_name" />
-
-                        @if (editEmpForm.first_name().touched() && editEmpForm.first_name().invalid()) {
-                        <ul class="error-list">
-                            @for (error of editEmpForm.first_name().errors(); track error) {
-                            <li>{{ error.message }}</li>
+                            @if (editEmpForm.first_name().touched() && editEmpForm.first_name().invalid()) {
+                                @for (error of editEmpForm.first_name().errors(); track error) {
+                                    <p class="error">{{ error.message }}</p>
+                                }
                             }
-                        </ul>
-                        }
+                        </div>
+
+                        <div class="flex flex-col gap-1.5">
+                            <label pLabel for="phone">
+                                <span>Phone number</span>
+                                <span aria-hidden="true">*</span>
+                            </label>
+                            <input pInputText id="phone" type="tel" [formField]="editEmpForm.phone_number" />
+
+                            @if (editEmpForm.phone_number().touched() && editEmpForm.phone_number().invalid()) {
+                                @for (error of editEmpForm.phone_number().errors(); track error) {
+                                    <p class="error">{{ error.message }}</p>
+                                }
+                            }
+                        </div>
                     </div>
 
 
-                    <div class="flex flex-col gap-1.5">
-                        <label pLabel for="contract_type">Contract type</label>
-                        <p-select id="contract_type" [options]="shared.contracts" [formField]="editEmpForm.contract_type" optionLabel="label" optionValue="value" class="w-full md:w-56" />
+                    <div class="flex flex-col gap-4">
+                        <div class="flex flex-col gap-1.5">
+                            <label pLabel for="lname">
+                                <span>Last name</span>
+                                <span aria-hidden="true">*</span>
+                            </label>
+                            <input pInputText id="lname" type="text" [formField]="editEmpForm.last_name" />
 
-                        @if (editEmpForm.contract_type().touched() && editEmpForm.contract_type().invalid()) {
-                        <ul class="error-list">
-                            @for (error of editEmpForm.contract_type().errors(); track error) {
-                            <li>{{ error.message }}</li>
+                            @if (editEmpForm.last_name().touched() && editEmpForm.last_name().invalid()) {
+                                @for (error of editEmpForm.last_name().errors(); track error) {
+                                    <p class="error">{{ error.message }}</p>
+                                }
                             }
-                        </ul>
-                        }
-                    </div>
+                        </div>
 
+                        <div class="flex flex-col gap-1.5">
+                            <label pLabel for="account_status">Account status</label>
+                            <p-select id="account_status" [options]="shared.account_status" [formField]="editEmpForm.account_status" optionLabel="label" optionValue="value" class="w-full md:w-56" />
 
-                    <div class="flex flex-col gap-1.5">
-                        <label pLabel for="phone">Phone number</label>
-                        <input pInputText id="phone" type="number" [formField]="editEmpForm.phone_number" />
-
-                        @if (editEmpForm.phone_number().touched() && editEmpForm.phone_number().invalid()) {
-                        <ul class="error-list">
-                            @for (error of editEmpForm.phone_number().errors(); track error) {
-                            <li>{{ error.message }}</li>
+                            @if (editEmpForm.account_status().touched() && editEmpForm.account_status().invalid()) {
+                                @for (error of editEmpForm.account_status().errors(); track error) {
+                                    <p class="error">{{ error.message }}</p>
+                                }
                             }
-                        </ul>
-                        }
+                        </div>
                     </div>
-
-
                 </div>
 
 
-                <div class="flex flex-col gap-4">
-
-
+                <div class="flex  gap-4">
                     <div class="flex flex-col gap-1.5">
-                        <label pLabel for="lname">Last name</label>
-                        <input pInputText id="lname" type="text" [formField]="editEmpForm.last_name" />
-
-                        @if (editEmpForm.last_name().touched() && editEmpForm.last_name().invalid()) {
-                        <ul class="error-list">
-                            @for (error of editEmpForm.last_name().errors(); track error) {
-                            <li>{{ error.message }}</li>
-                            }
-                        </ul>
-                        }
+                        <label pLabel >Roles</label>
+                        <p-selectbutton  id="roles" [formField]="editEmpForm.roles" [allowEmpty]="false" [multiple]="true" [options]="shared.roles"  optionLabel="label" optionValue="value"/>
                     </div>
+                </div>
 
-
+                <div class="flex  gap-4">
                     <div class="flex flex-col gap-1.5">
-                        <label pLabel for="account_status">Account status</label>
-                        <p-select id="account_status" [options]="shared.account_status" [formField]="editEmpForm.account_status" optionLabel="label" optionValue="value" class="w-full md:w-56" />
-
-                        @if (editEmpForm.contract_type().touched() && editEmpForm.contract_type().invalid()) {
-                        <ul class="error-list">
-                            @for (error of editEmpForm.contract_type().errors(); track error) {
-                            <li>{{ error.message }}</li>
-                            }
-                        </ul>
-                        }
+                        <label pLabel >Contract type</label>
+                        <p-selectbutton  id="contract_type" [allowEmpty]="false" [formField]="editEmpForm.contract_type" [options]="shared.contracts" optionLabel="label" optionValue="value"/>
                     </div>
-
-
                 </div>
             </div>
 
             <ng-template #footer>
                 <button type="button" pButton severity="secondary" variant="outlined" (click)="showEditEmpDialog.set(false)">Cancel</button>
-                <button type="button" pButton (click)="commitEditEmpChanges()">Save</button>
+                <button type="button" pButton [disabled]="editEmpForm().invalid()" (click)="commitEditEmpChanges()">Save</button>
             </ng-template>
         </p-dialog>
     </div>

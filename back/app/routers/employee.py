@@ -8,11 +8,12 @@ router = APIRouter(
 )
 
 @router.post("/add_employee", response_model=schemas.EmployeePublic)
-async def add_employee(employee: schemas.EmployeeCreate, db: DbDep, current_emp: OauthDep):
+# async def add_employee(employee: schemas.EmployeeCreate, db: DbDep, current_emp: OauthDep):
+async def add_employee(employee: schemas.EmployeeCreate, db: DbDep):
     return await crud.create_employee(db= db, employee= employee)
 
 
-@router.patch("/confirm_account")
+@router.patch("/confirm_account", response_model=schemas.AccountActivationOut)
 def account_confirmation(accountActivation: schemas.AccountActivation, db: DbDep):
 
     utils.verifyToken(db=db, token_code=accountActivation.token)
@@ -44,3 +45,9 @@ def get_employees(db:DbDep, skip: int =0, limit: int =15, filter: str=''):
     #     "total_records": 1,
     #     "employees":[]
     # }
+
+
+@router.delete("/delete_employee/{employee_id}", response_model=schemas.DeleteEmployeeResponse)
+# def delete_employee(db:DbDep, employee_id:int, x:OauthDep):
+def delete_employee(db:DbDep, employee_id:int):
+    return crud.delete_employee(db=db,employee_id=employee_id)

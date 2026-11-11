@@ -1,171 +1,148 @@
+<p-toast key="promise" />
+
 @if(showAddEmpDialog()){
     <div class="flex justify-center">
-        <p-dialog [visible]="showAddEmpDialog()" [modal]="true" (onHide)="showAddEmpDialog.set(false)" header="Edit Employee" [style]="{ width: '36rem', height: '48rem' }">
-            <div class="flex justify-center gap-4">
-                <div class="flex flex-col gap-4">
+        <p-dialog [visible]="showAddEmpDialog()" [modal]="true" (onHide)="showAddEmpDialog.set(false)" header="Add Employee" [style]="{ height: '' }">
 
-                <!-- ---------------------------------------------------------------------------------------------------------------------- -->
+            <div class="flex flex-col justify-center gap-4">
+                <div class="flex  gap-4">
+                    <div class="flex flex-col gap-4">
+                    <!-- ---------------------------------------------------------------------------------------------------------------------- -->
 
-                    <div class="flex flex-col gap-1.5">
-                        <label pLabel for="fname">First name</label>
-                        <input pInputText id="fname" type="text" [formField]="addEmpForm.first_name" />
+                        <div class="flex flex-col gap-1.5">
+                            <label pLabel for="fname">
+                                <span>First name</span>
+                                <span aria-hidden="true">*</span>
+                            </label>
+                            <input pInputText id="fname" type="text" [formField]="addEmpForm.first_name" />
 
-                        @if (addEmpForm.first_name().touched() && addEmpForm.first_name().invalid()) {
-                        <ul class="error-list">
-                            @for (error of addEmpForm.first_name().errors(); track error) {
-                            <li>{{ error.message }}</li>
+                            @if (addEmpForm.first_name().touched() && addEmpForm.first_name().invalid()) {
+                                @for (error of addEmpForm.first_name().errors(); track error) {
+                                <p class="error">{{ error.message }}</p>
+                                }
                             }
-                        </ul>
-                        }
+                        </div>
+
+                        <div class="flex flex-col gap-1.5">
+                            <label pLabel>
+                                <span>Birth date</span>
+                                <span aria-hidden="true">*</span>
+                            </label>
+                            <!-- <input pInputText  type="date"  /> -->
+                            <p-datepicker inputId="datetype" [showIcon]="true" dateFormat="yy-mm-dd" [formField]="addEmpForm.birth_date"/>
+
+
+                            @if (addEmpForm.birth_date().touched() && addEmpForm.birth_date().invalid()) {
+                                @for (error of addEmpForm.birth_date().errors(); track error) {
+                                <p class="error">{{ error.message }}</p>
+                                }
+                            }
+                        </div>
+
+                        <div class="flex flex-col gap-1.5">
+                            <label pLabel for="email">
+                                <span>Email</span>
+                                <span aria-hidden="true">*</span>
+                            </label>
+                            <input pInputText id="email" type="text" [formField]="addEmpForm.email" />
+
+                            @if (addEmpForm.email().touched() && addEmpForm.email().invalid()) {
+                                @for (error of addEmpForm.email().errors(); track error) {
+                                <p class="error">{{ error.message }}</p>
+                                }
+                            }
+                        </div>
+
+                        <div class="flex flex-col gap-1.5">
+                            <label pLabel for="phone">
+                                <span>Phone number</span>
+                                <span aria-hidden="true">*</span>
+                            </label>
+                            <input pInputText id="phone" type="tel" [formField]="addEmpForm.phone_number" />
+
+                            @if (addEmpForm.phone_number().touched() && addEmpForm.phone_number().invalid()) {
+                                @for (error of addEmpForm.phone_number().errors(); track error) {
+                                <p class="error">{{ error.message }}</p>
+                                }
+                            }
+                        </div>
                     </div>
 
-                    <div class="flex flex-col gap-1.5">
-                        <label pLabel for="role">Role</label>
-                        <p-select id="role" [options]="shared.roles" [formField]="addEmpForm.roles" optionLabel="label" optionValue="value" class="w-full md:w-56" />
 
-                        @if (addEmpForm.roles().touched() && addEmpForm.roles().invalid()) {
-                        <ul class="error-list">
-                            @for (error of addEmpForm.roles().errors(); track error) {
-                            <li>{{ error.message }}</li>
+                    <!-- ---------------------------------------------------------------------------------------------------------------------- -->
+
+
+                    <div class="flex flex-col gap-4">
+                        <div class="flex flex-col gap-1.5">
+                            <label pLabel for="lname">
+                                <span>Last name</span>
+                                <span aria-hidden="true">*</span>
+                            </label>
+                            <input pInputText id="lname" type="text" [formField]="addEmpForm.last_name" />
+
+                            @if (addEmpForm.last_name().touched() && addEmpForm.last_name().invalid()) {
+                                @for (error of addEmpForm.last_name().errors(); track error) {
+                                <p class="error">{{ error.message }}</p>
+                                }
                             }
-                        </ul>
-                        }
-                    </div>
+                        </div>
 
-                    <div class="flex flex-col gap-1.5">
-                        <label pLabel for="birth_date">Birth date</label>
-                        <!-- <input pInputText  type="date"  /> -->
-                        <p-datepicker inputId="datetype" dateFormat="yy-mm-dd" id="birth_date" [formField]="addEmpForm.birth_date"/>
+                        <div class="flex flex-col gap-1.5">
+                            <label pLabel for="address">Address</label>
+                            <input pInputText id="address" type="text" [formField]="addEmpForm.address" />
 
-
-                        @if (addEmpForm.birth_date().touched() && addEmpForm.birth_date().invalid()) {
-                        <ul class="error-list">
-                            @for (error of addEmpForm.birth_date().errors(); track error) {
-                            <li>{{ error.message }}</li>
+                            @if (addEmpForm.address().touched() && addEmpForm.address().invalid()) {
+                                @for (error of addEmpForm.address().errors(); track error) {
+                                <p class="error">{{ error.message }}</p>
+                                }
                             }
-                        </ul>
-                        }
-                    </div>
+                        </div>
 
-                    <div class="flex flex-col gap-1.5">
-                        <label pLabel for="contract_type">Contract type</label>
-                        <p-select id="contract_type" [options]="shared.contracts" [formField]="addEmpForm.contract_type" optionLabel="label" optionValue="value" class="w-full md:w-56" />
+                        <div class="flex flex-col gap-1.5">
+                            <label pLabel>Gender</label>
+                            <p-select id="gender" [options]="shared.genders" [formField]="addEmpForm.gender" optionLabel="label" optionValue="value" class="w-full md:w-56" />
 
-                        @if (addEmpForm.contract_type().touched() && addEmpForm.contract_type().invalid()) {
-                        <ul class="error-list">
-                            @for (error of addEmpForm.contract_type().errors(); track error) {
-                            <li>{{ error.message }}</li>
+                            @if (addEmpForm.gender().touched() && addEmpForm.gender().invalid()) {
+                                @for (error of addEmpForm.gender().errors(); track error) {
+                                <p class="error">{{ error.message }}</p>
+                                }
                             }
-                        </ul>
-                        }
-                    </div>
+                        </div>
 
-                    <div class="flex flex-col gap-1.5">
-                        <label pLabel for="email">Email</label>
-                        <input pInputText id="email" type="text" [formField]="addEmpForm.email" />
+                        <div class="flex flex-col gap-1.5">
+                            <label pLabel for="cnss_number">Cnss number</label>
+                            <input pInputText id="cnss_number" [formField]="addEmpForm.cnss_number" />
 
-                        @if (addEmpForm.email().touched() && addEmpForm.email().invalid()) {
-                        <ul class="error-list">
-                            @for (error of addEmpForm.email().errors(); track error) {
-                            <li>{{ error.message }}</li>
+                            @if (addEmpForm.cnss_number().touched() && addEmpForm.cnss_number().invalid()) {
+                                @for (error of addEmpForm.cnss_number().errors(); track error) {
+                                <p class="error">{{ error.message }}</p>
+                                }
                             }
-                        </ul>
-                        }
+                        </div>
                     </div>
-
-                    <div class="flex flex-col gap-1.5">
-                        <label pLabel for="phone">Phone number</label>
-                        <input pInputText id="phone" type="number" [formField]="addEmpForm.phone_number" />
-
-                        @if (addEmpForm.phone_number().touched() && addEmpForm.phone_number().invalid()) {
-                        <ul class="error-list">
-                            @for (error of addEmpForm.phone_number().errors(); track error) {
-                            <li>{{ error.message }}</li>
-                            }
-                        </ul>
-                        }
-                    </div>
-
-                </div>
-
-
-                <!-- ---------------------------------------------------------------------------------------------------------------------- -->
-
-                <div class="flex flex-col gap-4">
-                    <div class="flex flex-col gap-1.5">
-                        <label pLabel for="lname">Last name</label>
-                        <input pInputText id="lname" type="text" [formField]="addEmpForm.last_name" />
-
-                        @if (addEmpForm.last_name().touched() && addEmpForm.last_name().invalid()) {
-                        <ul class="error-list">
-                            @for (error of addEmpForm.last_name().errors(); track error) {
-                            <li>{{ error.message }}</li>
-                            }
-                        </ul>
-                        }
-                    </div>
-
-                    <div class="flex flex-col gap-1.5">
-                        <label pLabel for="address">Address</label>
-                        <input pInputText id="address" type="text" [formField]="addEmpForm.address" />
-
-                        @if (addEmpForm.address().touched() && addEmpForm.address().invalid()) {
-                        <ul class="error-list">
-                            @for (error of addEmpForm.address().errors(); track error) {
-                            <li>{{ error.message }}</li>
-                            }
-                        </ul>
-                        }
-                    </div>
-
-                    <div class="flex flex-col gap-1.5">
-                        <label pLabel for="gender">Gender</label>
-                        <p-select id="gender" [options]="shared.genders" [formField]="addEmpForm.gender" optionLabel="label" optionValue="value" class="w-full md:w-56" />
-
-                        @if (addEmpForm.gender().touched() && addEmpForm.gender().invalid()) {
-                        <ul class="error-list">
-                            @for (error of addEmpForm.gender().errors(); track error) {
-                            <li>{{ error.message }}</li>
-                            }
-                        </ul>
-                        }
-                    </div>
-
-                    <div class="flex flex-col gap-1.5">
-                        <label pLabel for="account_status">Account status</label>
-                        <p-select id="account_status" [options]="shared.account_status" [formField]="addEmpForm.account_status" optionLabel="label" optionValue="value" class="w-full md:w-56" />
-
-                        @if (addEmpForm.contract_type().touched() && addEmpForm.contract_type().invalid()) {
-                        <ul class="error-list">
-                            @for (error of addEmpForm.contract_type().errors(); track error) {
-                            <li>{{ error.message }}</li>
-                            }
-                        </ul>
-                        }
-                    </div>
-
-                    <div class="flex flex-col gap-1.5">
-                        <label pLabel for="cnss_number">Cnss number</label>
-                        <input pInputText id="cnss_number" type="number" [formField]="addEmpForm.cnss_number" />
-
-                        @if (addEmpForm.cnss_number().touched() && addEmpForm.cnss_number().invalid()) {
-                        <ul class="error-list">
-                            @for (error of addEmpForm.cnss_number().errors(); track error) {
-                            <li>{{ error.message }}</li>
-                            }
-                        </ul>
-                        }
-                    </div>
-
                 </div>
 
                 <!-- ---------------------------------------------------------------------------------------------------------------------- -->
+
+                <div class="flex  gap-4">
+                    <div class="flex flex-col gap-1.5">
+                        <label pLabel >Contract type</label>
+                        <p-selectbutton  id="contract_type" [allowEmpty]="false" [formField]="addEmpForm.contract_type" [options]="shared.contracts" optionLabel="label" optionValue="value"/>
+                    </div>
+                </div>
+
+                <div class="flex  gap-4">
+                    <div class="flex flex-col gap-1.5">
+                        <label pLabel >Roles</label>
+                        <p-selectbutton  id="roles" [formField]="addEmpForm.roles" [allowEmpty]="false" [multiple]="true" [options]="shared.roles"  optionLabel="label" optionValue="value"/>
+                    </div>
+                </div>
 
             </div>
 
             <ng-template #footer>
                 <button type="button" pButton severity="secondary" variant="outlined" (click)="showAddEmpDialog.set(false)">Cancel</button>
-                <button type="button" pButton (click)="addEmp()">Save</button>
+                <button type="button" pButton [disabled]="addEmpForm().invalid()" (click)="commitAddEmp()">Save</button>
             </ng-template>
         </p-dialog>
     </div>

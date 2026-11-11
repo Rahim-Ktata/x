@@ -13,8 +13,8 @@ export class Shared{
         {label: 'SIVP', value:ContractType.SIVP},
     ]
     static roles = [
-        {label: 'Admin', value:Role.ADMIN},
         {label: 'Vendor', value:Role.VENDOR},
+        {label: 'Admin', value:Role.ADMIN},
         {label: 'Inventory manager', value:Role.INVENTORY_MANAGER},
         {label: 'Superuser', value:Role.SUPERUSER},
     ]

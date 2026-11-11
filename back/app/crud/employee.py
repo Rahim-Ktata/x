@@ -57,7 +57,9 @@ def get_all_employees(db: Session, skip: int = 0, limit: int = 100, filter: str 
         page_size=limit,
         employees=employees_out,
         total_records=total_records,
-        number_of_pages=number_of_pages
+        number_of_pages=number_of_pages,
+        stautus_code=200,
+        detail="employees retrieved successfully"
     )
 
 
@@ -71,6 +73,9 @@ async def create_employee(db: Session, employee: schemas.EmployeeCreate):
     try:
         #---------------- add employee to db ---------------
         db_employee = models.Employee(**employee_data)
+        # cnss number should be null otherwise it don't go with the ck_cnss_number constraint
+        if(db_employee.cnss_number == ''):
+            db_employee.cnss_number = None
         db.add(db_employee)
         db.flush() # the employee id exists now
 
@@ -108,7 +113,9 @@ async def create_employee(db: Session, employee: schemas.EmployeeCreate):
         **employee_data,
         id=db_employee.id,
         roles=employee_roles,
-        created_on=db_employee.created_on
+        created_on=db_employee.created_on,
+        status_code=200,
+        detail="Employee added successfully"
     )
 
 
@@ -155,3 +162,19 @@ def edit_employee(employee_id:int, entry:schemas.EditEmployeeEntry, db:Session):
         raise HTTPException(status_code=500, detail=utils.get_err_msg(str(e)))
 
     return schemas.EditEmployeeOut(msg="employee data updated", status_code='200')
+
+def delete_employee(employee_id:int, db:Session):
+    # verify user with that id exist
+    try:
+        emp = db.query(Employee).filter(Employee.id == employee_id).first()
+        if(emp is None):
+            return schemas.DeleteEmployeeResponse(detail="Employee not found", status_code=400)
+
+        db.delete(emp)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        crud.add_error(db=db, text=str(e))
+        raise HTTPException(status_code=500, detail=utils.get_err_msg(str(e)))
+
+    return schemas.DeleteEmployeeResponse(detail="Employee deleted successfully", status_code=200)

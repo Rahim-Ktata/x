@@ -4,10 +4,8 @@ from app.enums import ContractType, Gender, AccountStatus, Role
 from datetime import date, datetime
 from typing import List
 
+from schemas.common import MyBaseModel
 
-class MyBaseModel(BaseModel):
-    class config:
-        orm_mode = True
 
 class EmployeeRole(MyBaseModel):
 

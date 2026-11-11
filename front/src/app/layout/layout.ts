@@ -33,6 +33,7 @@ export class Layout implements OnInit{
   items: MenuItem[] | undefined;
   isDarkMode: boolean = false;
   constructor(){
+    // to do : make this gets the info from the system | from cashe or whatever
     this.isDarkMode=false;
   }
 
@@ -104,5 +105,6 @@ export class Layout implements OnInit{
       if(element)this.isDarkMode = !element.classList.contains('my-app-dark');
       // toggle : adds if missing, remove if present
       if(element)element.classList.toggle('my-app-dark');
+      // <html may-app-dark>
   }
 }

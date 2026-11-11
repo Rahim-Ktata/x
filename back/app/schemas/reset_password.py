@@ -1,15 +1,13 @@
+from app.schemas.common import MyBaseModel, Response
 
-from app.schemas.accountActivation import MyBaseModel
 
-class ForgetPasswordOut(MyBaseModel):
-    msg: str
-    status_code: int
+class ForgetPasswordOut(Response):
+    pass
 
 class ResetPasswordEntry(MyBaseModel):
     token : str
     password : str
     confirm_password : str
 
-class ResetPasswordOut(MyBaseModel):
-    msg: str
-    status_code: int
+class ResetPasswordOut(Response):
+    pass

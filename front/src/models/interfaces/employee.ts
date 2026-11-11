@@ -2,6 +2,7 @@ import { AccountStatus } from "../enums/account_status"
 import { ContractType } from "../enums/contract_type"
 import { Gender } from "../enums/gender"
 import { Role } from "../enums/role"
+import { Response } from "./common"
 
 export interface EmployeeBase{
     first_name : string  
@@ -24,7 +25,7 @@ export interface EmployeeInDB extends EmployeeBase{
     roles: [Role]
 }
 
-export interface EmployeePublic extends EmployeeBase{
+export interface EmployeePublic extends EmployeeBase,Response{
     id: number
     created_on: Date
     roles: [Role]
@@ -69,3 +70,5 @@ export interface PagedResponse{
 export interface GetAllEmployees extends PagedResponse{
     employees: [EmployeePublic]
 }
+
+export interface DeleteEmployeeResponse extends Response{}

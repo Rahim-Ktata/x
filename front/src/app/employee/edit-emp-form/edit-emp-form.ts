@@ -1,5 +1,5 @@
 import { Component, EventEmitter, inject, Input, model, OnChanges, Output, signal, SimpleChanges } from '@angular/core';
-import {email, form, FormField, required } from '@angular/forms/signals';
+import { minLength, maxLength, pattern, email, form, FormField, required } from '@angular/forms/signals';
 import { InputTextModule } from 'primeng/inputtext';
 import { DialogModule } from 'primeng/dialog';
 import { EditEmployeeEntry } from '../../../models/interfaces/employee';
@@ -12,10 +12,12 @@ import { AccountStatus } from '../../../models/enums/account_status';
 import { Role } from '../../../models/enums/role';
 import { SelectModule } from 'primeng/select';
 import { Shared } from '../shared';
+import { SelectButtonModule } from 'primeng/selectbutton';
 
 
 @Component({
   imports: [
+    SelectButtonModule,
     SelectModule,
     ButtonModule,
     DialogModule,
@@ -73,8 +75,19 @@ export class EditEmpForm implements OnChanges{
     (schemaPath) => {
       required(schemaPath.first_name, {message: 'First name is required'});
       required(schemaPath.last_name, {message: 'Last name is required'});
-      // email(schemaPath.email, {message: 'Enter a valid email address'});
-      // required(schemaPath.password, {message: 'Password is required'});
+      required(schemaPath.phone_number, {message: 'phone number is required'});
+      // required(schemaPath.birth_date, {message: 'Birth date is required'});
+
+      maxLength(schemaPath.first_name, 50, {message: 'First name is too long'});
+      maxLength(schemaPath.last_name, 50, {message: 'Last name is too long'});
+      maxLength(schemaPath.address, 50, {message: 'address is too long'});
+
+      pattern(schemaPath.phone_number, /^\d{8}$/, {
+        message: 'Phone must be 8 digits',
+      });
+      pattern(schemaPath.cnss_number, /^\d{8}-\d{2}$/, {
+        message: 'Cnss number must be in format: 12345678-12',
+      });
     }
   );
 

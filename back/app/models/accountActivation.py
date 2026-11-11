@@ -7,7 +7,7 @@ class AccountActivation(Base):
     __tablename__ = "account_activation"
 
     id = Column(Integer, primary_key = True)
-    employee_id= Column(Integer, ForeignKey("employee.id"), nullable = False)
+    employee_id= Column(Integer, ForeignKey("employee.id",ondelete="cascade"), nullable = False)
     email = Column(String, nullable = False)
     token = Column(String, nullable = False)
     status = Column(Enum(TokenStatus), nullable = False)

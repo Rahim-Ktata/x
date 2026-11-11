@@ -109,7 +109,6 @@ export class Employees implements OnInit{
           this.no_filter_results = (filter != '' && this.emp_db.employees.length == 0);
         },
       error : (error) => {
-        console.log(error)
         this.messageService.add({ severity: 'error', summary: 'Something went wrong', detail: "We couldn’t fetch the employees list." });
         this.loading.set(false)
       }
@@ -134,6 +133,19 @@ export class Employees implements OnInit{
 
   addEmp(){
     this.showAddEmpDialog = true;
+  }
+
+  deleteEmp(employee:any){
+    this.employeeService.deleteEmployee(employee.id).subscribe({
+      next : (data)=>{
+          this.loading.set(false);
+          this.messageService.add({ severity: 'success', summary: 'Deleted successfully', detail: 'Your changes have been saved.' });
+        },
+      error : (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Something went wrong', detail: "We couldn’t complete the action." });
+        this.loading.set(false)
+      }
+    })
   }
 
   onNotify(){

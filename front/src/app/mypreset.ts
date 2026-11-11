@@ -17,7 +17,6 @@ export const MyPreset = definePreset(Lara, {
             fontWeight: '{typography.font.weight}',
             fontSize: '{typography.font.size}'
         },
-
     },
     components: {
         
