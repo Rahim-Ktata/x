@@ -1,0 +1,12 @@
+<p-toast key="promise" />
+<div class="flex justify-center">
+    <p-dialog [visible]="showDeleteEmpDialog()" [closable]="false" [modal]="true" (onHide)="showDeleteEmpDialog.set(false)" header="Delete employee." [style]="{ width: '26rem' }">
+            <div class="flex flex-col gap-4">
+                <p class="text-surface-500 dark:text-surface-400 text-sm mt-0 mb-0">This action cannot be undone. All of the employee data, including sessions will be permanently removed.</p>
+                <div class="flex justify-end gap-2">
+                    <button type="button" pButton severity="secondary" (click)="showDeleteEmpDialog.set(false)">Cancel</button>
+                    <button type="button" pButton severity="danger" (click)="deleteEmp()">Delete</button>
+                </div>
+            </div>
+    </p-dialog>
+</div>

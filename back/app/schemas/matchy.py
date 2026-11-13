@@ -56,3 +56,8 @@ class MatchyUploadEntry(MyBaseModel):
 #             }
 #         ]
 # }
+
+class WrongCell(MyBaseModel): 
+    rowIndex: int
+    colIndex: int
+    issues: List[str]

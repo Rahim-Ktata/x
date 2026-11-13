@@ -6,6 +6,7 @@ from typing import List
 
 from app.models.employee import Employee
 from app.schemas.common import MyBaseModel, Response
+from app.schemas.matchy import WrongCell
 
 
 class EmployeeBase(MyBaseModel):
@@ -47,8 +48,8 @@ class EmployeeCreate(EmployeeBase):
 
 
 class EmployeeUploadResponse(Response):
+    wrong_cells : List[WrongCell] = []
     errs : List[str] = []
-    warnings : List[str] = []
 
 class EditEmployeeOut(Response):
     pass

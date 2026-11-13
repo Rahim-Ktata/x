@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import BackgroundTasks, FastAPI
 
 from datetime import datetime
@@ -10,6 +12,7 @@ from sqlmodel import Field, Session, create_engine, select
 
 from app.enums.tokenStatus import TokenStatus
 from app.externel_services import email_service
+from app.schemas.matchy import WrongCell
 from app.utils.errors import get_err_msg
 
 def get_session():
@@ -99,16 +102,6 @@ def are_valid_roles(employee, field):
     return field
 
 
-
-# def cnss_number_err_msg(employee, field):
-#     contract_type = employee["contract_type"]
-#     if(contract_type in ['CDI', 'CDD']):
-#         if field == None :
-#             err_msg = "cnss_number shoudl be provided when contract_type is CDI or CDD"
-#     if contract_type and is_regex_matched(cnss_regex, field)==None:
-#         err_msg = "cnss number format: xxxxxxxx-xx"
-#     return err_msg
-
 fields_check = {
     # field to validate: (func to validate, err msg)
     "email": (lambda employee,field: is_valid_mail(employee,field), "wrong mail address"),
@@ -151,36 +144,30 @@ possible_fields = {
 }
 
 
+# extra protection layer, after the front check, before the db check
 def validate_employee_data(employee):
-    errs = []
-    warnings = []
-    # TODO:wrong cells not used, just a feat to be added
     wrong_cells = []
     employee_data = { field: cell.value for field, cell in employee.items() }
 
     for field in possible_fields:
         # field not included (missing col)
-        # we already did this in main.py before calling this func , redundant
-        # TODO: delete one of the checks , either this or the one in main
+        issues = []
         if field not in employee_data:
             if field in mandatory_fields or (field == "cnss_number" and employee['contract_type'].value in ['CDI','CDD']):
+                errs = []
                 if(field=="cnss_number"):
                     errs.append(f"line { employee[field].rowIndex }: { possible_fields[field] } is required when Contract type is CDI or CDD")
                 else:
                     errs.append(f"line { employee[field].rowIndex }: { possible_fields[field] } is a required field")
-                wrong_cells.append({employee[field]['rowIndex'], employee[field]['colIndex']})
+                return schemas.EmployeeUploadResponse(
+                    detail= "Missing mandatory fields",
+                    status_code=400,
+                    errs=errs,
+                )
 
         # field included with empty val
         elif employee_data[field] == '':
-            if field in mandatory_fields or (field == "cnss_number" and employee['contract_type'].value in ['CDI','CDD']):
-                if(field=="cnss_number"):
-                    errs.append(f"line { employee[field].rowIndex }: { possible_fields[field] } is required when Contract type is CDI or CDD")
-                else:
-                    errs.append(f"line { employee[field].rowIndex }: { possible_fields[field] } is a required field")
-                wrong_cells.append({employee[field].rowIndex, employee[field].colIndex})
-            else:
-                employee_data[field] = None # added None in db
-        # field exist
+                wrong_cells.append(WrongCell(rowIndex=employee[field].rowIndex,colIndex=employee[field].colIndex,issues=["required when Contract type is CDI or CDD"]))
         else:
             # if it has condition
             if field in fields_check:
@@ -188,53 +175,24 @@ def validate_employee_data(employee):
                 # converted (the val in lower upper.. or none if err)
                 converted_field = fields_check[field][0](employee_data, employee_data[field]) 
                 if converted_field is None:
-                    # mandatory field
-                    if field in mandatory_fields or (field == "cnss_number" and employee['contract_type'].value in ['CDI','CDD']):
-                        errs.append(f"line { employee[field].rowIndex } in { possible_fields[field]}: { fields_check[field][1] } ")
-                        wrong_cells.append({employee[field].rowIndex, employee[field].colIndex})
-                    else:
-                        warnings.append(f"line { employee[field].rowIndex } in { possible_fields[field]}: { fields_check[field][1] } ")
-                        wrong_cells.append({employee[field].rowIndex, employee[field].colIndex})
-                # condition satisfied
+                    wrong_cells.append(WrongCell(rowIndex=employee[field].rowIndex,colIndex=employee[field].colIndex,issues=[{ fields_check[field][1] }]))
                 else:
                     # we might make it lower | upper case
                     employee_data[field] = converted_field
 
-    #TODO: add the wrong cells feat
-    return (errs, warnings, employee_data)
+    return (employee_data, wrong_cells)
 
 
-# MatchyUploadEntry looks like this:
-# {
-#     "lines":
-#         [
-#             {
-#                 "first_name":{
-#                     "value":"Rahim",
-#                     "rowIndex":0,
-#                     "colIndex":0
-#                 }
-#             },
-#             {
-#                 "first_name":{
-#                     "value":"Rahim",
-#                     "rowIndex":0,
-#                     "colIndex":0
-#                 }
-#             }
-#         ]
-# }
 
 
-def validate_employees_data_and_upload(employees: list, force_upload: bool, background_tasks: BackgroundTasks, db: Session = Depends(get_session)):
-    errs = []
-    warnings = []
+def validate_employees_data_and_upload(employees: list, background_tasks: BackgroundTasks, db: Session = Depends(get_session)):
+
+    wrong_cells : List[WrongCell]= []
     employees_to_add = []
     roles_per_email = {}
     for employee in employees:
-        emp_errs, emp_warnings, emp_data = validate_employee_data(employee)
-        errs.extend(emp_errs)
-        warnings.extend(emp_warnings)
+        emp_data, emp_wrong_cells = validate_employee_data(employee)
+        wrong_cells.extend(emp_wrong_cells)
         roles_per_email[emp_data.get('email')] = emp_data.get('roles').split(',')
         emp_data.pop("roles")
         employees_to_add.append(models.Employee(**emp_data))
@@ -243,45 +201,42 @@ def validate_employees_data_and_upload(employees: list, force_upload: bool, back
 
     # mail | phone.. exist already in db | given twice
     for field in unique_fields:
-        vals = set()
+        vals = set() # to check for duplicates in the same file
+        issues = [] # issues of each wrong cell
         # enumerate : adds index number (0 based) (to add the line number)
         for line, employee in enumerate(employees):
+            issues = []
             val = employee[field].value.strip()
             # empty val
             if val == '':
                 continue
+
             # check duplicate vals for unique fields (from the user input)
             elif val in vals:
-                msg = f"line {line}: { field } must be unique, but it exists more than once in the file"
-                (errs if field in mandatory_fields else warnings).append(msg)
+                issues.append('Value must be unique, but it exists more than once in the file')
+                
             else: vals.add(val)
 
-        # check duplicate exist in db
-        try:
-            # select * from employee where email in ("rahiim@gmail.com", "xy@gmail.com");
-            duplicates = db.query(models.Employee).filter(unique_fields[field].in_(vals)).all()
-        except Exception as e:
-            import crud
-            crud.add_error(db=db,text=str(e))
-            raise HTTPException(status_code=500, detail=get_err_msg(str(e)))
+            # check duplicate exist in db
+            try:
+                dup = db.query(models.Employee).filter(getattr(models.Employee,field) == employee[field].value.strip()).first()
+            except Exception as e:
+                from app import crud
+                crud.add_error(db=db,text=str(e))
+                raise HTTPException(status_code=500, detail=get_err_msg(str(e)))
+            if dup:
+                issues.append('Value must be unique but it already exists in database')
 
-        if duplicates :
-            used=[]
-            for dup in duplicates:
-                used.append(getattr(dup,field))
-            msg = f"{ (', ').join(used) } already used"
-            # we re working in mandatory fields
-            # (errs if field in mandatory_fields else warnings).append(msg)
-            errs.append(msg)
+            if(issues):
+                wrong_cells.append(WrongCell(rowIndex=employee[field].rowIndex,colIndex=employee[field].colIndex,issues=issues))
 
 
-
-    if errs or (warnings and not force_upload):
+    if(wrong_cells):
         return schemas.EmployeeUploadResponse(
-            errs = errs,
-            warnings = warnings
+            wrong_cells = wrong_cells,
+            status_code = 400,
         )
-    # else if warnings
+
 
     try:
         # --------------- add all to db --------------------------
@@ -328,7 +283,7 @@ def validate_employees_data_and_upload(employees: list, force_upload: bool, back
         raise HTTPException(status_code=500, detail=get_err_msg(str(e)))
 
     return schemas.EmployeeUploadResponse(
-        detail="file uploaded successfully",
+        detail="Employees uploaded successfully",
         status_code=201
     )
 

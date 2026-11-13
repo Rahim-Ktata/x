@@ -1,0 +1,18 @@
+
+
+<p-toast key="promise" />
+<div class="flex justify-center">
+        <!-- <p-dialog header="Header" [modal]="true" [(visible)]="visible" [style]="{  }"  > -->
+
+    <p-dialog [visible]="showImportEmpsDialog()" [modal]="true" (onHide)="showImportEmpsDialog.set(false)" header="Import employees." [style]="{ width: '80rem' }" [maximizable]="true" >
+            <div class="flex flex-col gap-4">
+
+                <div #matchy_container></div>
+
+            </div>
+            <ng-template #footer>
+                    <button type="button" pButton severity="secondary" (click)="showImportEmpsDialog.set(false)">Cancel</button>
+                    <!-- <button type="button" pButton severity="primary" (click)="ximportEmployees()">Import</button> -->
+            </ng-template>
+    </p-dialog>
+</div>

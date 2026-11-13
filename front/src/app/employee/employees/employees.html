@@ -1,10 +1,11 @@
 <p-toast />
+<app-matchy-comp></app-matchy-comp>
 
 <button type="button" pButton size="small" (click)="addEmp()">
     <svg data-p-icon="plus" ></svg>
     Add employee
 </button>
-<button type="button" pButton size="small">
+<button type="button" (click)="importEmployees()" pButton size="small">
     <svg data-p-icon="plus" ></svg>
     Import employees
 </button>
@@ -12,6 +13,8 @@
 <!-- [()] banana in box is two way binding, the data shared between parent & child -->
 <app-add-emp-form (notify)="onNotify()" [(loading)]="loading" [(showAddEmpDialog)]="showAddEmpDialog"></app-add-emp-form>
 <app-edit-emp-form (notify)="onNotify()" [(loading)]="loading" [empCurData]="empCurData" [(showEditEmpDialog)]="showEditEmpDialog"></app-edit-emp-form>
+<app-delete-emp (notify)="onNotify()" [(loading)]="loading" [empCurData]="empCurData" [(showDeleteEmpDialog)]="showDeleteEmpDialog"></app-delete-emp>
+<app-matchy-comp (notify)="onNotify()" [(loading)]="loading" [(showImportEmpsDialog)]="showImportEmpsDialog"></app-matchy-comp>
 
 
 <!-- @if (showAddEmpDialog){

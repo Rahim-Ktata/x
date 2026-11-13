@@ -20,6 +20,8 @@ import { MessageService } from 'primeng/api';
 import { AddEmpForm } from '../add-emp-form/add-emp-form';
 import { EditEmpForm } from '../edit-emp-form/edit-emp-form';
 import { EmployeeService } from '../../services/employee_service/employee-service';
+import { DeleteEmp } from '../delete-emp/delete-emp';
+import { MatchyComp } from '../matchy-comp/matchy-comp';
 
 
 @Component({
@@ -40,7 +42,9 @@ import { EmployeeService } from '../../services/employee_service/employee-servic
     SkeletonModule,
     Plus,
     AddEmpForm,
-    EditEmpForm
+    EditEmpForm,
+    DeleteEmp,
+    MatchyComp
 ],
   selector: 'app-employees',
   styleUrl: './employees.css',
@@ -64,6 +68,8 @@ export class Employees implements OnInit{
 
   showEditEmpDialog: boolean = false;
   showAddEmpDialog: boolean = false;
+  showDeleteEmpDialog: boolean = false;
+  showImportEmpsDialog: boolean = false;
 
   empCurData :any;
   private messageService = inject(MessageService);
@@ -135,21 +141,17 @@ export class Employees implements OnInit{
     this.showAddEmpDialog = true;
   }
 
-  deleteEmp(employee:any){
-    this.employeeService.deleteEmployee(employee.id).subscribe({
-      next : (data)=>{
-          this.loading.set(false);
-          this.messageService.add({ severity: 'success', summary: 'Deleted successfully', detail: 'Your changes have been saved.' });
-        },
-      error : (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Something went wrong', detail: "We couldn’t complete the action." });
-        this.loading.set(false)
-      }
-    })
+
+  deleteEmp(employee: any){
+    this.empCurData = employee;
+    this.showDeleteEmpDialog = true;
   }
 
   onNotify(){
     // refresh the table
     this.getEmployees(this.first, this.rows, this.name_substr);
+  }
+  importEmployees(){
+    this.showImportEmpsDialog = true;
   }
 }

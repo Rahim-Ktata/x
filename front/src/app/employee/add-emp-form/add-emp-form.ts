@@ -20,7 +20,6 @@ import { Spinner } from '@primeicons/angular/spinner';
 import { ToastModule } from 'primeng/toast';
 
 
-
 @Component({
   imports: [
     ToastModule,
@@ -111,14 +110,14 @@ export class AddEmpForm {
     // this.addEmpModel().birth_date = new Date(birth_date.toISOString());
     let addEntry = this.addEmpModel();
 
-        this.messageService.add({
-            severity: 'secondary',
-            summary: 'Please wait...',
-            detail: 'Sending invitation email. This may take a moment.',
-            icon: 'pi pi-spinner pi-spin',
-            key: 'promise',
-            sticky: true
-        });
+      this.messageService.add({
+          severity: 'secondary',
+          summary: 'Please wait...',
+          detail: 'Sending invitation email. This may take a moment.',
+          icon: 'pi pi-spinner pi-spin',
+          key: 'promise',
+          sticky: true
+      });
         
 
     this.employeeService.addEmployee(this.addEmpModel()).subscribe({

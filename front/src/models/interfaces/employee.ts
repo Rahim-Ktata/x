@@ -1,3 +1,4 @@
+import { WrongCell } from "sheet-matchy"
 import { AccountStatus } from "../enums/account_status"
 import { ContractType } from "../enums/contract_type"
 import { Gender } from "../enums/gender"
@@ -48,11 +49,9 @@ export interface EditEmployeeEntry{
     roles: [Role]
 }
 
-export interface EmployeeUploadResponse{
+export interface EmployeeUploadResponse extends Response{
     errs : [string]
-    warnings : [string]
-    detail: string
-    stautus_code: number | undefined
+    wrong_cells : [WrongCell]
 }
 
 export interface EditEmployeeOut{
@@ -72,3 +71,14 @@ export interface GetAllEmployees extends PagedResponse{
 }
 
 export interface DeleteEmployeeResponse extends Response{}
+
+export interface MatchyCell{
+    value: string
+    rowIndex: number
+    colIndex: number
+}
+
+export interface MatchyUploadEntry{
+    lines: [{string: MatchyCell}] // [{"fname":{"Rahim",0,0}}, {}]
+    force_upload: boolean
+}
